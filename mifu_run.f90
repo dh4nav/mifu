@@ -10,6 +10,10 @@ program mifu_run
   ! Register each test here.
   MIFU_REGISTER_TEST(test_dummyABFail)
   MIFU_REGISTER_TEST(test_dummyABPass)
+  MIFU_REGISTER_TEST(test_dyABFailInt)
+  MIFU_REGISTER_TEST(test_dyABPassInt)
+  MIFU_REGISTER_TEST(test_dyABFailDbl)
+  MIFU_REGISTER_TEST(test_dyABPassDbl)
 
   ! End the tests.
   MIFU_END()

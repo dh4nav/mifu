@@ -10,6 +10,8 @@ module mifu_asserts
   private
 
   public :: assert_equal_real8
+  public :: assert_equal_integer
+  public :: assert_equal_dbl
   public :: mifu_running_name
   public :: print_error_log
 
@@ -85,7 +87,7 @@ module mifu_asserts
        reg_p = reg_p + 1
        write(error_log(reg_p),*) "line:", line
        reg_p = reg_p + 1
-       write(error_log(reg_p),*) "real*8 equality assertion faild within limit: ", eps
+       write(error_log(reg_p),*) "real*8 equality assertion failed within limit: ", eps
        reg_p = reg_p + 1
        write(error_log(reg_p),*) "Expected ", a
        reg_p = reg_p + 1
@@ -100,5 +102,103 @@ module mifu_asserts
     end if
 
   end subroutine assert_equal_real8
+
+  !> Asserts the equality of two double numbers within a specified limit.
+  !! This subroutine is supposed to be called through the
+  !! MIFU_ASSERT_DOUBLE_EQUAL( actual, expected, eps ) macro.
+  !! @param[in] a    : actual value
+  !! @param[in] b    : expected value
+  !! @param[in] eps  : allowed difference
+  !! @param[in] file : the name of the file where assertion was made
+  !! @param[in] line : the line in the file where assertion was made
+  !!
+  subroutine assert_equal_dbl(a, b, eps, file, line)
+    implicit none
+    double precision, intent(in) :: a
+    double precision, intent(in) :: b
+    double precision, intent(in) :: eps
+    character*(*), intent(in) :: file
+    integer, intent(in) :: line
+    ! ------------------------
+
+    ! Local variables.
+    double precision :: diff
+
+    ! Function body.
+    diff = abs(a-b)
+    if (eps < diff) then
+       failed = failed + 1
+       write(error_log(reg_p),*) "----------------------------------------------------------------------------"
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "FAILURE ", failed, ") ", "test: ", trim(mifu_running_name)
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "file:", file
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "line:", line
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "double prec equality assertion failed within limit: ", eps
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "Expected ", a
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "Actual   ", b
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "Diff     ", diff
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*)
+       reg_p = reg_p + 1
+    else
+       passed = passed + 1
+    end if
+
+  end subroutine assert_equal_dbl
+
+
+  !> Asserts the equality of two integer numbers
+  !! This subroutine is supposed to be called through the
+  !! MIFU_ASSERT_INTEGER_EQUAL( actual, expected ) macro.
+  !! @param[in] a    : actual value
+  !! @param[in] b    : expected value
+  !! @param[in] file : the name of the file where assertion was made
+  !! @param[in] line : the line in the file where assertion was made
+  !!
+  subroutine assert_equal_integer(a, b, file, line)
+    implicit none
+    Integer, intent(in) :: a
+    Integer, intent(in) :: b
+    character*(*), intent(in) :: file
+    integer, intent(in) :: line
+    ! ------------------------
+
+    ! Local variables.
+    Integer :: diff
+
+    ! Function body.
+    diff = abs(a-b)
+    if (diff.ne.0) then
+       failed = failed + 1
+       write(error_log(reg_p),*) "----------------------------------------------------------------------------"
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "FAILURE ", failed, ") ", "test: ", trim(mifu_running_name)
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "file:", file
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "line:", line
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "integer equality assertion failed"
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "Expected ", a
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "Actual   ", b
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*) "Diff     ", diff
+       reg_p = reg_p + 1
+       write(error_log(reg_p),*)
+       reg_p = reg_p + 1
+    else
+       passed = passed + 1
+    end if
+
+  end subroutine assert_equal_integer
+
 
 end module mifu_asserts
